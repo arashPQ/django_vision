@@ -8,13 +8,15 @@
 
 from django.db import models
 from django.utils.text import slugify
-from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.contrib.auth.models import AbstractUser, BaseUserManager, Permission, Group
 from django.utils.translation import gettext_lazy as _
 from django.db.models.signals import post_save, pre_save, m2m_changed
 from django.dispatch import receiver
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, PermissionDenied
 from django.utils import timezone
 from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.auth import get_user_model
 import uuid
 import logging
 
@@ -79,6 +81,7 @@ class TimeStampedModel(models.Model):
 
 
 class User(AbstractUser, TimeStampedModel):
+    
     class UserType(models.TextChoices):
         CUSTOMER = 'customer', _('Customer')
         SELLER = 'seller', _('Seller')
@@ -143,7 +146,7 @@ class User(AbstractUser, TimeStampedModel):
     # Security Settings
     two_factor_enabled = models.BooleanField(default=False)
     two_factor_method = models.CharField(
-        max_length=10,
+        max_length=64,
         choices=[
             ('sms', _('SMS')),
             ('email', _('Email')),
@@ -171,6 +174,26 @@ class User(AbstractUser, TimeStampedModel):
 
     credit_balance = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
     total_spent = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    
+    
+    groups = models.ManyToManyField(
+        Group,
+        verbose_name=_('groups'),
+        blank=True,
+        help_text=_('The Groups this user belongs to.'),
+        related_name='custom_user_set',
+        related_query_name='user',
+    )
+    
+    user_permissions = models.ManyToManyField(
+        Permission,
+        verbose_name=_('user permissions'),
+        blank=True,
+        help_text=_('Specific permissions for the user.'),
+        related_name='custom_user_permissions_set',
+        related_query_name='user',
+    )
+    
     
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name']
@@ -327,7 +350,7 @@ class CustomerProfile(TimeStampedModel):
     occupation = models.CharField(max_length=100, blank=True, null=True)
     company = models.CharField(max_length=100, blank=True, null=True)
     
-    # ترجیحات خرید
+    '''
     preferred_categories = models.ManyToManyField(
         'catalog.Category', 
         blank=True, 
@@ -350,7 +373,7 @@ class CustomerProfile(TimeStampedModel):
         blank=True,
         null=True
     )
-    
+    '''
 
     loyalty_tier = models.CharField(
         max_length=20,
@@ -391,8 +414,8 @@ class CustomerProfile(TimeStampedModel):
     )
     
 
-    wishlist = models.ManyToManyField('catalog.Product', through='WishlistItem', blank=True)
-    recently_viewed = models.ManyToManyField('catalog.Product', through='RecentlyViewed', blank=True)
+    # wishlist = models.ManyToManyField('catalog.Product', through='WishlistItem', blank=True)
+    # recently_viewed = models.ManyToManyField('catalog.Product', through='RecentlyViewed', blank=True)
     
 
     email_marketing = models.BooleanField(default=True)
@@ -742,7 +765,7 @@ class AdminProfile(TimeStampedModel):
         return permission_mapping.get(permission_code, False)
 
 
-
+'''
 class WishlistItem(TimeStampedModel):
     customer = models.ForeignKey(CustomerProfile, on_delete=models.CASCADE)
     product = models.ForeignKey('catalog.Product', on_delete=models.CASCADE)
@@ -772,7 +795,7 @@ class RecentlyViewed(TimeStampedModel):
     def __str__(self):
         return f"{self.customer.user.email} - {self.product.name} ({self.view_count} views)"
 
-
+'''
 class LoyaltyHistory(TimeStampedModel):
     customer = models.ForeignKey(CustomerProfile, on_delete=models.CASCADE, related_name='loyalty_history')
     points = models.IntegerField()
