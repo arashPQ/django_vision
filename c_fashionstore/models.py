@@ -65,7 +65,7 @@ class ClothingProduct(models.Model):
     name = models.CharField(max_length=200, verbose_name='product name')
     brand = models.ForeignKey(ClothingBrand, on_delete=models.CASCADE, verbose_name='brand')
     category = models.ForeignKey(ClothingCategory, on_delete=models.CASCADE, verbose_name='category')
-    collection_year = models.IntegerField(verbose_name='سال مجموعه', validators=[MinValueValidator(2000), MaxValueValidator(2030)])
+    collection_year = models.IntegerField(verbose_name='collection year', validators=[MinValueValidator(2000), MaxValueValidator(2030)])
     
     # Technical info
     description = models.TextField(verbose_name='description')
