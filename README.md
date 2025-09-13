@@ -1,8 +1,7 @@
 <h3>Django vision</h3>
 
-<h5>you can run source code with 
    
-The <strong>'django vision'</strong> project gives Django developers a vision for designing the models they need.<br>
+The <strong>'django vision'</strong> project gives Django developers a vision for designing the models they need.<br><br>
 <strong style="color: aqua;">This is not a complete project</strong>, each app from this project can be used for a separate project.<br>
 More apps (more models) and better optimizations will be added as the project progresses.
 
