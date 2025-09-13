@@ -2,7 +2,7 @@
 
    
 The <strong>'django vision'</strong> project gives Django developers a vision for designing the models they need.<br><br>
-<p style="color: aqua;"><strong>This is not a complete project</strong></p>, each app from this project can be used for a separate project.<br>
+<p style="color: red;"><strong>This is not a complete project</strong></p>, each app from this project can be used for a separate project.<br>
 More apps (more models) and better optimizations will be added as the project progresses.
 
 
