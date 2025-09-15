@@ -4,6 +4,24 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.urls import reverse
 from mptt.models import MPTTModel, TreeForeignKey
 
+
+'''
+
+    This Category for mega menu, advanced Categorize for products. You can use this category model for other projects
+    Example :
+    
+        Computer & IT
+            Software Development
+                Python language
+                    Django
+            Networking
+                CCNA
+                ...
+            ...
+
+'''
+
+
 class Category(MPTTModel):
     name = models.CharField(max_length=128, db_index=True)
     slug = models.SlugField(max_length=128, unique=True)
