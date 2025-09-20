@@ -25,7 +25,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    '',
+    'mptt',
     
     
     ####    Projects Vision
@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'a_bookstore',
     'b_techstore',
     'c_fashionstore',
+    'd_homestuff',
     
 ]
 
